@@ -14,6 +14,7 @@
     "nuxt": "^3.11.2",
     "nuxt-vuefire": "^1.0.2",
     "vue": "^3.4.27",
-    "vue-router": "^4.3.2"
+    "vue-router": "^4.3.2",
+    "vuefire": "^3.1.23"
   }
 }
