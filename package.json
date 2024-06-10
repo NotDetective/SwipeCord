@@ -12,8 +12,10 @@
     "type-check": "vue-tsc --build --force"
   },
   "dependencies": {
+    "firebase": "^10.12.2",
     "vue": "^3.4.21",
-    "vue-router": "^4.3.0"
+    "vue-router": "^4.3.0",
+    "vuefire": "^3.1.23"
   },
   "devDependencies": {
     "@tsconfig/node20": "^20.1.4",
