@@ -20,6 +20,7 @@ console.log(users)
       <nav class="navbar">
         <RouterLink to="/">Home</RouterLink>
         <br>
+        <RouterLink to="/gatcha">Gatcha</RouterLink>
       </nav>
       <div class="content-bar">
         <slot/>
