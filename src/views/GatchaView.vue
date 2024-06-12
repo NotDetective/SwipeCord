@@ -1,46 +1,104 @@
-<script setup lang="ts">
-import { useFirestore } from 'vuefire'
-const db = useFirestore()
+  <script setup lang="ts">
+  import { ref } from 'vue';
+  import { getFirestore, doc, getDoc, updateDoc } from 'firebase/firestore';
+  import { useFirestore } from 'vuefire'
 
-const pull = () => {
-  // number are in %
-  const HardPity = 0.97;
-  const threeStarChance = 73;
-  const fourStarChance = 23;
-  const fiveStarChance = 2.5;
-  //not used just so you know
-  const sixStarChance = 0.5;
+  const db = useFirestore()
 
-  const threeStarProbability = threeStarChance / 100;
-  const fourStarProbability = fourStarChance / 100;
-  const fiveStarProbability = fiveStarChance / 100;
+  const userId = 'ID:3';
+  const bannerId = 'QhMUFADip3rp81ygFdyP';
+  var pulledItem;
 
-  const randomNumberPull = Math.random();
-  let pulledItem;
+  const pullItem = async () => {
+    try {
+      const userDocRef = doc(db, 'users', userId);
+      const userDoc = await getDoc(userDocRef);
+      let userData = userDoc.data();
 
-  if (randomNumberPull < threeStarProbability) {
-    pulledItem = "3-star item";
-  } else if (randomNumberPull < threeStarProbability + fourStarProbability) {
-    pulledItem = "4-star item";
-  } else if (randomNumberPull < threeStarProbability + fourStarProbability + fiveStarProbability) {
-    pulledItem = "5-star item";
-  } else {
-    pulledItem = "6-star global pull";
-  }
-  console.log("Pulled item:", pulledItem);
-}
+      if (!userData) {
+        throw new Error('User data not found for user ID: ' + userId);
+      }
 
-</script>
+      const bannerDocRef = doc(db, 'banner', bannerId);
+      const bannerDoc = await getDoc(bannerDocRef);
+      let bannerData = bannerDoc.data();
 
-<template>
-  <main>
-    <div>
-      <h1>Gacha Pull</h1>
-      <button @click="pull">Pull from Gacha</button>
-    </div>
-  </main>
-</template>
+      if (!bannerData) {
+        throw new Error('Banner data not found for banner ID: ' + bannerId);
+      }
 
-<style scoped>
+      const userPullsDocRef = doc(db, 'pulls', bannerId, 'special', userId);
+      const UserPullsDoc = await getDoc(userPullsDocRef);
+      let UserPullData = UserPullsDoc.data();
 
-</style>
+      let pity = userData.pity || 0;
+
+      const HardPity = 0.97;
+      const threeStarChance = 73;
+      const fourStarChance = 23;
+      const fiveStarChance = 2.5;
+
+      const threeStarProbability = threeStarChance / 100;
+      const fourStarProbability = fourStarChance / 100;
+      const fiveStarProbability = fiveStarChance / 100;
+
+      let randomNumberPull = Math.random();
+
+      if (pity >= 40) {
+        randomNumberPull = HardPity;
+      } else {
+        pity++;
+      }
+
+      let pulledItemType;
+      let randomNumberItem;
+
+      if (randomNumberPull < threeStarProbability) {
+        pulledItemType = '3 star';
+        randomNumberItem = Math.floor(Math.random() * 10) + 1;
+      } else if (randomNumberPull < threeStarProbability + fourStarProbability) {
+        pulledItemType = '4 star';
+        randomNumberItem = Math.floor(Math.random() * 4) + 1;
+      } else if (randomNumberPull < threeStarProbability + fourStarProbability + fiveStarProbability) {
+        pulledItemType = '5 star';
+        if (bannerData.type === 'Special') {
+          const fiftyFifty = Math.floor(Math.random() * 2) + 1;
+          if (fiftyFifty === 2) {
+            bannerData = (await getDoc(doc(db, 'banners', 'Normal'))).data();
+          }
+        }
+        randomNumberItem = 1;
+      } else {
+        pulledItemType = '6-star item';
+        randomNumberItem = 1;
+      }
+
+      userData.pity = pity;
+
+      console.log(pulledItemType);
+      console.log(bannerData[pulledItemType][randomNumberItem - 1]);
+      pulledItem = bannerData[pulledItemType][randomNumberItem - 1];
+
+      await updateDoc(userPullsDocRef, {
+        'history': [...UserPullData.History, String(pulledItem)],
+        'pity': UserPullData.Pity
+      });
+
+    } catch (error) {
+      console.error('Error pulling item:', error);
+    }
+  };
+  </script>
+
+  <template>
+    <main>
+      <div>
+        <h1>Gacha Pull</h1>
+        <button @click="pullItem">Pull from Gacha</button>
+        <p v-if="pulledItem">Pulled Item: {{ pulledItem }}  </p>
+      </div>
+    </main>
+  </template>
+
+  <style scoped>
+  </style>
