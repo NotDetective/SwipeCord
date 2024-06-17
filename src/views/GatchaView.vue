@@ -123,6 +123,27 @@
       console.error('Error pulling item:', error);
     }
   };
+
+  const resetDemo = async () => {
+    try {
+      const userInvDocRef = doc(db, 'users', userId, 'inventory', userId);
+      const userPullsDocRef = doc(db, 'pulls', bannerId, 'special', userId);
+
+      await updateDoc(userInvDocRef, {
+        Items: []
+      });
+
+      await updateDoc(userPullsDocRef, {
+        pity: 0,
+        History: []
+      });
+
+      console.log('Demo reset successfully.');
+    } catch (error) {
+      console.error('Error resetting demo:', error);
+    }
+  };
+
   </script>
 
   <template>
@@ -130,7 +151,8 @@
       <div>
         <h1>Gacha Pull</h1>
         <button @click="pullItem">Pull from Gacha</button>
-        <p v-if="pulledItem">Pulled Item: {{ pulledItem }}  </p>
+        <button @click="resetDemo">DEMO RESET</button>
+
       </div>
     </main>
   </template>
