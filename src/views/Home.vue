@@ -1,15 +1,47 @@
-<script setup lang="ts">
+<script lang="js">
+import { GoogleAuthProvider } from 'firebase/auth'
+export const googleAuthProvider = new GoogleAuthProvider()
+</script>
+
+<script setup lang="js">
 import "@/assets/home.css";
+// import {useFirebaseAuth} from "vuefire";
+// import { getAuth, signInWithPopup, GoogleAuthProvider } from "firebase/auth";
+import {
+  signInWithPopup,
+  signOut,
+} from 'firebase/auth'
+import { useCurrentUser, useFirebaseAuth } from 'vuefire'
+
+const auth = useFirebaseAuth() // only exists on client side
+
+// display errors if any
+
+function signinRedirect() {
+  signInWithRedirect(auth, googleAuthProvider).catch((reason) => {
+    console.error('Failed signinRedirect', reason)
+
+  })
+}
+
+function signinPopup() {
+  signInWithPopup(auth, googleAuthProvider).catch((reason) => {
+    console.error('Failed sign', reason)
+
+  })
+}
+
 
 ("https://fonts.googleapis.com/css2?family=Rubik:ital,wght@0,300..900;1,300..900&display=swap");
 </script>
 
 <template>
+  <ErrorBox v-if="error" :error="error" />
 <h1>Welkom op Swipecord</h1>
 <div class="box_home">
   <div class="links">
     <p>Log in met Google</p>
-    <button type="button" class="login-with-google-btn" >
+    <button @click="signinPopup()" type="button" class="login-with-google-btn" >
       Sign in with Google
     </button>
   </div>

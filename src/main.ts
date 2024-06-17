@@ -5,6 +5,8 @@ import { VueFire, VueFireAuth } from 'vuefire'
 import App from './App.vue'
 import router from './router'
 
+
+
 import { initializeApp } from 'firebase/app'
 
 console.log(import.meta.env.VITE_FIREBASE_API_KEY)
