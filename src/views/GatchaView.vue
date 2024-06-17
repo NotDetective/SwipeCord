@@ -27,13 +27,16 @@
         throw new Error('Banner data not found for banner ID: ' + bannerId);
       }
 
-      const userPullsDocRef = doc(db, 'pulls', bannerId, 'special', userId);
+      const userPullsDocRef = doc(db, 'pulls', bannerId, /*hardcoded for now*/ 'special', userId);
       const UserPullsDoc = await getDoc(userPullsDocRef);
       let UserPullData = UserPullsDoc.data();
 
-      let pity = userData.pity || 0;
+      let pity = userPullsDocRef.pity || 0;
+      console.log("making: "+pity)
+
 
       const HardPity = 0.97;
+      //chance in %
       const threeStarChance = 73;
       const fourStarChance = 23;
       const fiveStarChance = 2.5;
@@ -46,9 +49,12 @@
 
       if (pity >= 40) {
         randomNumberPull = HardPity;
+        pity = 0;
       } else {
         pity++;
       }
+      console.log("after check: "+pity)
+
 
       let pulledItemType;
       let randomNumberItem;
@@ -72,16 +78,16 @@
         pulledItemType = '6-star item';
         randomNumberItem = 1;
       }
-
-      userData.pity = pity;
-
+      console.log("making: "+pity)
       console.log(pulledItemType);
       console.log(bannerData[pulledItemType][randomNumberItem - 1]);
       pulledItem = bannerData[pulledItemType][randomNumberItem - 1];
 
+      console.log(...UserPullData.History, String(pulledItem))
+      console.log(UserPullData.pity)
       await updateDoc(userPullsDocRef, {
-        'history': [...UserPullData.History, String(pulledItem)],
-        'pity': UserPullData.Pity
+        //'History': [...UserPullData.History, String(pulledItem)],
+        'pity': pity
       });
 
     } catch (error) {
