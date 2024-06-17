@@ -16,8 +16,6 @@ console.log(users)
 
 <template>
 
-
   <RouterView />
+  
 </template>
-
-
