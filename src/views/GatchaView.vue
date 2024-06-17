@@ -15,13 +15,17 @@
       const userDoc = await getDoc(userDocRef);
       let userData = userDoc.data();
 
+      const userInvDocRef = doc(db, 'users', userId, 'inventory', userId);
+      const userInvDoc = await getDoc(userInvDocRef);
+      let userinventoryData = userInvDoc.data();
+
       if (!userData) {
         throw new Error('User data not found for user ID: ' + userId);
       }
 
       const bannerDocRef = doc(db, 'banner', bannerId);
       const bannerDoc = await getDoc(bannerDocRef);
-      let bannerData = bannerDoc.data();
+      let   bannerData = bannerDoc.data();
 
       if (!bannerData) {
         throw new Error('Banner data not found for banner ID: ' + bannerId);
@@ -31,7 +35,7 @@
       const UserPullsDoc = await getDoc(userPullsDocRef);
       let UserPullData = UserPullsDoc.data();
 
-      let pity = userPullsDocRef.pity || 0;
+      let pity = UserPullData.pity || 0;
       console.log("making: "+pity)
 
 
@@ -53,7 +57,6 @@
       } else {
         pity++;
       }
-      console.log("after check: "+pity)
 
 
       let pulledItemType;
@@ -67,6 +70,7 @@
         randomNumberItem = Math.floor(Math.random() * 4) + 1;
       } else if (randomNumberPull < threeStarProbability + fourStarProbability + fiveStarProbability) {
         pulledItemType = '5 star';
+        pity = 0;
         if (bannerData.type === 'Special') {
           const fiftyFifty = Math.floor(Math.random() * 2) + 1;
           if (fiftyFifty === 2) {
@@ -76,9 +80,9 @@
         randomNumberItem = 1;
       } else {
         pulledItemType = '6-star item';
+        pity = 0;
         randomNumberItem = 1;
       }
-      console.log("making: "+pity)
       console.log(pulledItemType);
       console.log(bannerData[pulledItemType][randomNumberItem - 1]);
       pulledItem = bannerData[pulledItemType][randomNumberItem - 1];
@@ -86,9 +90,34 @@
       console.log(...UserPullData.History, String(pulledItem))
       console.log(UserPullData.pity)
       await updateDoc(userPullsDocRef, {
-        //'History': [...UserPullData.History, String(pulledItem)],
+        'History': [...UserPullData.History, String(pulledItem)],
         'pity': pity
       });
+
+      if (!Array.isArray(userinventoryData.Items)) {
+        userinventoryData.Items = [];
+      }
+
+      let itemExists = false;
+      for (const item of userinventoryData.Items) {
+        if (item === pulledItem) {
+          itemExists = true;
+          break;
+        }
+      }
+
+      if (!itemExists) {
+        userinventoryData.Items.push(pulledItem);
+        await updateDoc(userInvDocRef, {
+          Items: userinventoryData.Items
+        });
+        console.log('Added new item to inventory:', pulledItem);
+      } else {
+        console.log('Item already exists in inventory:', pulledItem);
+      }
+      console.log(userinventoryData.Items);
+
+
 
     } catch (error) {
       console.error('Error pulling item:', error);
