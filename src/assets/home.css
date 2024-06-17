@@ -56,6 +56,39 @@ h1
     align-items: center;
 }
 
+.aanmelden
+{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    font-family: "Rubik", sans-serif;
+    font-optical-sizing: auto;
+    font-weight: 700;
+}
+
+.aanmelden p
+{
+    font-size: 1.5em;
+    font-family: "Rubik", sans-serif;
+    font-optical-sizing: auto;
+    font-weight: 700;
+    font-style: normal;
+    margin-bottom: 20px;
+}
+
+form
+{
+    width: 20vw;
+}
+
+.aanmelden form
+{
+    width: 30vw;
+}
+
+
+
 .rechts
 {
     display: flex;
@@ -173,3 +206,8 @@ button {
     align-items: center;
 }
 
+a
+{
+    text-decoration: underline;
+    color: black;
+}

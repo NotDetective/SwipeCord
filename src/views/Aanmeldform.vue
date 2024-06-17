@@ -7,15 +7,8 @@ import "@/assets/home.css";
 <template>
 <h1>Welkom op Swipecord</h1>
 <div class="box_home">
-  <div class="links">
-    <p>Log in met Google</p>
-    <button type="button" class="login-with-google-btn" >
-      Sign in with Google
-    </button>
-  </div>
-
-  <div class="rechts">
-    <p>Log in</p>
+<div class="aanmelden">
+    <p>Aanmelden</p>
     <form action="">
       <label for="first">
         Username:
@@ -25,8 +18,23 @@ import "@/assets/home.css";
              name="first"
              placeholder="Enter your Username" required>
 
+      <label for="email">
+        Emailadres:
+      </label>
+      <input type="email"
+             id="email"
+             name="email"
+             placeholder="Enter your Emailadres" required>
+
       <label for="password">
         Password:
+      </label>
+      <input type="password"
+             id="password"
+             name="password"
+             placeholder="Enter your Password" required>
+      <label for="password">
+        Herhaal Password:
       </label>
       <input type="password"
              id="password"
@@ -40,7 +48,7 @@ import "@/assets/home.css";
         </button>
       </div>
     </form>
-    <a href="/aanmelden">Nog geen account? Maak er een aan!</a>
+  <a href="/">Inloggen</a>
   </div>
 </div>
 
