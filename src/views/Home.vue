@@ -1,9 +1,10 @@
-<script lang="js">
+<script>
 import { GoogleAuthProvider } from 'firebase/auth'
 export const googleAuthProvider = new GoogleAuthProvider()
+
 </script>
 
-<script setup lang="js">
+<script setup>
 import "@/assets/home.css";
 // import {useFirebaseAuth} from "vuefire";
 // import { getAuth, signInWithPopup, GoogleAuthProvider } from "firebase/auth";
@@ -12,25 +13,30 @@ import {
   signOut,
 } from 'firebase/auth'
 import { useCurrentUser, useFirebaseAuth } from 'vuefire'
+import router from "../router";
 
 const auth = useFirebaseAuth() // only exists on client side
 
-// display errors if any
 
-function signinRedirect() {
-  signInWithRedirect(auth, googleAuthProvider).catch((reason) => {
-    console.error('Failed signinRedirect', reason)
 
-  })
-}
-
-function signinPopup() {
-  signInWithPopup(auth, googleAuthProvider).catch((reason) => {
+const signinPopup = async () => {
+  /*signInWithPopup(auth, googleAuthProvider).catch((reason) => {
     console.error('Failed sign', reason)
+  })*/
 
-  })
+  this.$router.push('/about')
 }
 
+const login = () => {
+  const provider = new GoogleAuthProvider();
+  signInWithPopup(auth, provider)
+      .then(() => {
+        router.replace('/about');
+      })
+      .catch((reason) => {
+        console.error('Failed to sign in', reason);
+      });
+};
 
 ("https://fonts.googleapis.com/css2?family=Rubik:ital,wght@0,300..900;1,300..900&display=swap");
 </script>
@@ -41,7 +47,7 @@ function signinPopup() {
 <div class="box_home">
   <div class="links">
     <p>Log in met Google</p>
-    <button @click="signinPopup()" type="button" class="login-with-google-btn" >
+    <button @click="login()" type="button" class="login-with-google-btn" >
       Sign in with Google
     </button>
   </div>

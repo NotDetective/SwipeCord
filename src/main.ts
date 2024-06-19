@@ -6,7 +6,6 @@ import App from './App.vue'
 import router from './router'
 
 
-
 import { initializeApp } from 'firebase/app'
 
 console.log(import.meta.env.VITE_FIREBASE_API_KEY)
@@ -19,6 +18,8 @@ export const firebaseApp = initializeApp({
 })
 
 const app = createApp(App)
+
+
 
 app.use(router)
 
