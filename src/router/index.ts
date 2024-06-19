@@ -16,20 +16,20 @@ const router = createRouter({
       name: 'gatcha',
       component: GatchaView
     },
-    {
-      path: '/about',
-      name: 'about',
-      // route level code-splitting
-      // this generates a separate chunk (About.[hash].js) for this route
-      // which is lazy-loaded when the route is visited.
-      component: () => import('../views/AboutView.vue')
-    },
-    {
+
       path: '/aanmelden',
         name: 'aanmelden',
       component: () => import('../views/Aanmeldform.vue')
+    },
+    {
+      path: '/about',
+      name: 'about',
+      component: () => import('../views/AboutView.vue')
     }
   ]
 })
+
+
+
 
 export default router

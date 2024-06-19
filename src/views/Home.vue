@@ -1,15 +1,53 @@
-<script setup lang="ts">
+<script>
+import { GoogleAuthProvider } from 'firebase/auth'
+export const googleAuthProvider = new GoogleAuthProvider()
+
+</script>
+
+<script setup>
 import "@/assets/home.css";
+// import {useFirebaseAuth} from "vuefire";
+// import { getAuth, signInWithPopup, GoogleAuthProvider } from "firebase/auth";
+import {
+  signInWithPopup,
+  signOut,
+} from 'firebase/auth'
+import { useCurrentUser, useFirebaseAuth } from 'vuefire'
+import router from "../router";
+
+const auth = useFirebaseAuth() // only exists on client side
+
+
+
+const signinPopup = async () => {
+  /*signInWithPopup(auth, googleAuthProvider).catch((reason) => {
+    console.error('Failed sign', reason)
+  })*/
+
+  this.$router.push('/about')
+}
+
+const login = () => {
+  const provider = new GoogleAuthProvider();
+  signInWithPopup(auth, provider)
+      .then(() => {
+        router.replace('/about');
+      })
+      .catch((reason) => {
+        console.error('Failed to sign in', reason);
+      });
+};
 
 ("https://fonts.googleapis.com/css2?family=Rubik:ital,wght@0,300..900;1,300..900&display=swap");
 </script>
 
 <template>
+  <ErrorBox v-if="error" :error="error" />
 <h1>Welkom op Swipecord</h1>
 <div class="box_home">
   <div class="links">
     <p>Log in met Google</p>
-    <button type="button" class="login-with-google-btn" >
+    <button @click="login()" type="button" class="login-with-google-btn" >
       Sign in with Google
     </button>
   </div>

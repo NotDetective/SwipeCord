@@ -10,6 +10,8 @@ const db = useFirestore()
 
 const users = useCollection(collection(db, 'users'))
 
+
+
 console.log(users)
 
 </script>
