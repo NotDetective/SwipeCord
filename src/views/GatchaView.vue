@@ -60,9 +60,9 @@ const pullItem = async () => {
     let pity = UserPullData.pity || 0;
 
     const HardPity = 0.97;
-    const threeStarChance = 73;
+    const threeStarChance = 74;
     const fourStarChance = 23;
-    const fiveStarChance = 2.5;
+    const fiveStarChance = 1.5;
 
     const threeStarProbability = threeStarChance / 100;
     const fourStarProbability = fourStarChance / 100;
