@@ -24,7 +24,7 @@ const signinPopup = async () => {
     console.error('Failed sign', reason)
   })*/
 
-  this.$router.push('/about')
+  this.$router.push('/gatcha/QhMUFADip3rp81ygFdyP')
 }
 
 const login = () => {
