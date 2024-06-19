@@ -12,7 +12,7 @@ const router = createRouter({
       component: Home
     },
     {
-      path: '/gatcha',
+      path: '/gatcha/:id',
       name: 'gatcha',
       component: GatchaView
     },
