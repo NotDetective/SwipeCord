@@ -28,7 +28,8 @@ const addMessage = async () => {
   await addDoc(messagesCollectionRef, {
     text: newMessage.value,
     createdAt: serverTimestamp(),
-    userId: LoginUser
+    userId: LoginUser,
+    displayName: 'Bhavik'
   });
   newMessage.value = "";
 }
@@ -43,7 +44,9 @@ onMounted(() => {
     <template #default>
       <div v-if="messages.length > 0">
         <div v-for="(message, index) in messages" :key="index">
-          {{ message.text }}
+          <div>{{ message.displayName }}</div>
+          <div>{{ message.text }}</div>
+          <div>{{ message.createdAt }}</div>
         </div>
       </div>
       <div v-else>
