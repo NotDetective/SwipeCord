@@ -1,27 +1,61 @@
 <script setup lang="ts">
-import {useFirestore} from 'vuefire'
-import {collection, getDocs} from "firebase/firestore";
-import {ref} from "vue";
-
+import { useFirestore } from 'vuefire'
+import { collection, addDoc, onSnapshot, serverTimestamp } from "firebase/firestore";
+import { ref, onMounted } from "vue";
 
 const LoginUser = 'bh47QisqhyYcIRciLhlh9GE6jzx1'
 const chatId = '7onqwJmH73U3ujPdurjb'
-
 const otherUserId = 'q3KfIuCiqiehAs8CRiH8fQsmVaC2'
 
 const db = useFirestore()
 
-const getMessages = async () => {
+const messages = ref([])
+const newMessage = ref("")
+
+const listenToMessages = () => {
   const messagesCollectionRef = collection(db, 'chats', chatId , 'messages');
-  const messagesSnapshot = await getDocs(messagesCollectionRef);
-  return messagesSnapshot.docs.map(doc => doc.data());
+  onSnapshot(messagesCollectionRef, (snapshot) => {
+    messages.value = snapshot.docs.map(doc => doc.data());
+  });
 }
 
-let messages = ref( await getMessages() )
+const addMessage = async () => {
+  if (newMessage.value.trim() === "") {
+    return;
+  }
 
-console.log(messages);
+  const messagesCollectionRef = collection(db, 'chats', chatId , 'messages');
+  await addDoc(messagesCollectionRef, {
+    text: newMessage.value,
+    createdAt: serverTimestamp(),
+    userId: LoginUser
+  });
+  newMessage.value = "";
+}
+
+onMounted(() => {
+  listenToMessages();
+});
 </script>
 
 <template>
-  <h1>HELP!!!!!</h1>
+  <Suspense>
+    <template #default>
+      <div v-if="messages.length > 0">
+        <div v-for="(message, index) in messages" :key="index">
+          {{ message.text }}
+        </div>
+      </div>
+      <div v-else>
+        Loading messages...
+      </div>
+    </template>
+    <template #fallback>
+      <div>Loading...</div>
+    </template>
+  </Suspense>
+  <div>
+    <input v-model="newMessage" placeholder="Type your message here..." />
+    <button @click="addMessage">Send</button>
+  </div>
 </template>
