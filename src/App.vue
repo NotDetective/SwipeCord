@@ -10,13 +10,15 @@ const db = useFirestore()
 
 const users = useCollection(collection(db, 'users'))
 
+
+
 console.log(users)
 
 </script>
 
 <template>
+
   <RouterView />
+  
 </template>
 
-<style scoped>
-</style>
