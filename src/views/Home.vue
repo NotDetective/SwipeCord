@@ -1,43 +1,97 @@
-<script>
-import { GoogleAuthProvider } from 'firebase/auth'
-export const googleAuthProvider = new GoogleAuthProvider()
-
-</script>
-
 <script setup>
 import "@/assets/home.css";
-// import {useFirebaseAuth} from "vuefire";
-// import { getAuth, signInWithPopup, GoogleAuthProvider } from "firebase/auth";
-import {
-  signInWithPopup,
-  signOut,
-} from 'firebase/auth'
 import { useCurrentUser, useFirebaseAuth } from 'vuefire'
 import router from "../router";
 
-const auth = useFirebaseAuth() // only exists on client side
+import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, createUserWithEmailAndPassword, signInWithEmailAndPassword } from "firebase/auth";
+import { getFirestore, doc, setDoc, deleteDoc } from "firebase/firestore";
+
+const auth = getAuth();
+const db = getFirestore();
 
 
 
-const signinPopup = async () => {
-  /*signInWithPopup(auth, googleAuthProvider).catch((reason) => {
-    console.error('Failed sign', reason)
-  })*/
+const registerWithEmail = async (email, password) => {
+  try {
+    const result = await createUserWithEmailAndPassword(auth, email, password);
+    const user = result.user;
+    await initializeUserData(user.uid);
+    router.replace('/gatcha/QhMUFADip3rp81ygFdyP');
+  } catch (error) {
+    console.error('Failed to register', error);
+  }
+};
 
-  this.$router.push('/gatcha/QhMUFADip3rp81ygFdyP')
-}
+const loginWithEmail = async (email, password) => {
+  try {
+    const result = await signInWithEmailAndPassword(auth, email, password);
+    const user = result.user;
+    router.replace('/gatcha/QhMUFADip3rp81ygFdyP');
+  } catch (error) {
+    console.error('Failed to login', error);
+  }
+};
+
 
 const login = () => {
   const provider = new GoogleAuthProvider();
   signInWithPopup(auth, provider)
-      .then(() => {
-        router.replace('/about');
+      .then(async (result) => {
+        const user = result.user;
+        await initializeUserData(user.uid);
+        router.replace('/gatcha/QhMUFADip3rp81ygFdyP');
       })
       .catch((reason) => {
         console.error('Failed to sign in', reason);
       });
 };
 
+const initializeUserData = async (userId) => {
+  const pullsRef = doc(db, `pulls/QhMUFADip3rp81ygFdyP/special/${userId}`);
+  const userRef = doc(db, `users/${userId}`);
+  const inventoryRef = doc(db, `users/${userId}/inventory/${userId}`);
+
+  const userData = {
+    DailyStreak: 0,
+    Coins: 0,
+    hasDaily: false,
+    rank: 1,
+    xp: 0,
+    xpcap: 100
+  };
+
+  const pullsData = {
+    pity: 0,
+    History: []
+  };
+
+  const inventoryData = {
+    Items: []
+  };
+
+  await setDoc(pullsRef, pullsData);
+  await setDoc(userRef, userData);
+  await setDoc(inventoryRef, inventoryData);
+};
+
+const deleteUserData = async (userId) => {
+  const pullsRef = doc(db, `pulls/QhMUFADip3rp81ygFdyP/special/${userId}`);
+  const userRef = doc(db, `users/${userId}`);
+  const inventoryRef = doc(db, `users/${userId}/inventory/${userId}`);
+
+  await deleteDoc(pullsRef);
+  await deleteDoc(userRef);
+  await deleteDoc(inventoryRef);
+  deleteUserAccount();
+};
+
+const deleteUserAccount = async () => {
+  const user = auth.currentUser;
+  if (user) {
+    await deleteUserData(user.uid);
+    await user.delete();
+  }
+};
 ("https://fonts.googleapis.com/css2?family=Rubik:ital,wght@0,300..900;1,300..900&display=swap");
 </script>
 
@@ -50,6 +104,7 @@ const login = () => {
     <button @click="login()" type="button" class="login-with-google-btn" >
       Sign in with Google
     </button>
+
   </div>
 
   <div class="rechts">
@@ -79,6 +134,7 @@ const login = () => {
       </div>
     </form>
     <a href="/aanmelden">Nog geen account? Maak er een aan!</a>
+    <a href="/gatcha/QhMUFADip3rp81ygFdyP">gatcha //placeholder</a>
   </div>
 </div>
 
