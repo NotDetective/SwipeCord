@@ -2,10 +2,36 @@
 import { useFirestore } from 'vuefire'
 import { collection, addDoc, onSnapshot, serverTimestamp, query, orderBy, doc, deleteDoc, updateDoc } from "firebase/firestore";
 import { ref, onMounted } from "vue";
+import {useRoute} from "vue-router";
+import {getAuth, onAuthStateChanged} from "firebase/auth";
+import router from "@/router";
 
-const LoginUser = 'bh47QisqhyYcIRciLhlh9GE6jzx1'
-const chatId = '7onqwJmH73U3ujPdurjb'
-const otherUserId = 'q3KfIuCiqiehAs8CRiH8fQsmVaC2'
+const auth = getAuth();
+
+onAuthStateChanged(auth, (user) => {
+  if (user) {
+    console.log('User is signed in.');
+  } else {
+    console.log('No user is signed in.');
+    router.push('/');
+  }
+});
+
+let userId = ref('');
+let displayName = ref(null);
+
+onAuthStateChanged(auth, (user) => {
+  if (user) {
+    userId.value = user.uid;
+    displayName.value = user.displayName ? user.displayName : ' ';
+    console.log(user.displayName);
+
+  } else {
+    console.log('No user is signed in.');
+  }
+});
+
+const chatId = useRoute().params.id
 
 const db = useFirestore()
 
@@ -34,7 +60,8 @@ const addMessage = async () => {
   await addDoc(messagesCollectionRef, {
     text: newMessage.value,
     createdAt: serverTimestamp(),
-    userId: LoginUser
+    userId: userId.value,
+    displayName: displayName.value
   });
   newMessage.value = "";
 }
@@ -74,9 +101,11 @@ onMounted(() => {
     <template #default>
       <div v-if="messages.length > 0">
         <div v-for="(message, index) in messages" :key="message.id">
+          <!-- if(displayName === message.displayName) place item right  -->
+          <span v-if="editingMessageId !== message.id">{{ message.displayName }}</span>
           <span v-if="editingMessageId !== message.id">{{ message.text }}</span>
           <input v-else v-model="editingMessageText"
-            @keyup.enter="updateMessage"
+                 @keyup.enter="updateMessage"
           />
           <button v-if="editingMessageId === message.id" @click="updateMessage">Save</button>
           <button v-if="editingMessageId !== message.id" @click="startEditing(message.id, message.text)">Edit</button>
@@ -93,7 +122,7 @@ onMounted(() => {
   </Suspense>
   <div>
     <input v-model="newMessage" placeholder="Type your message here..."
-      @keyup.enter="addMessage"
+           @keyup.enter="addMessage"
     />
     <button @click="addMessage">Send</button>
   </div>
