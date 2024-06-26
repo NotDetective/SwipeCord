@@ -96,5 +96,6 @@ onMounted(() => {
       @keyup.enter="addMessage"
     />
     <button @click="addMessage">Send</button>
+    <a href="/">Home :3</a>
   </div>
 </template>
