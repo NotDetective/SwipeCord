@@ -138,7 +138,7 @@ body {
   filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#fdbb2d", endColorstr="#22c1c3", GradientType=1);
   height: 100vh;
   width: 100%;
-  margin: 0;
+  margin-left: -15%;
 
   display: flex;
   align-items: center;

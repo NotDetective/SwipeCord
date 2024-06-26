@@ -61,6 +61,7 @@ import "@/assets/home.css";
 @import url('https://fonts.googleapis.com/css2?family=Rubik:ital,wght@0,300..900;1,300..900&display=swap');
 
 body {
+  position: absolute;
   background: rgb(253, 187, 45);
   background: -moz-linear-gradient(0deg, rgba(253, 187, 45, 1) 0%, rgba(34, 193, 195, 1) 68%);
   background: -webkit-linear-gradient(0deg, rgba(253, 187, 45, 1) 0%, rgba(34, 193, 195, 1) 68%);
@@ -68,7 +69,7 @@ body {
   filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#fdbb2d", endColorstr="#22c1c3", GradientType=1);
   height: 100vh;
   width: 100%;
-  margin: 0;
+  margin-left: -15%;
 
   display: flex;
   align-items: center;
