@@ -9,6 +9,8 @@
   const db = useFirestore()
   const auth = getAuth();
   const userId = ref('');
+  const Userpity = ref(0);
+  const coins = ref(0);
 
   onMounted(() => {
     onAuthStateChanged(auth, (user) => {
@@ -57,6 +59,7 @@
       const UserPullsDoc = await getDoc(userPullsDocRef);
       let UserPullData = UserPullsDoc.data();
 
+      coins.value = userData?.Coins || 0;
       let pity = UserPullData.pity || 0;
 
       const HardPity = 0.97;
@@ -111,6 +114,7 @@
         'History': [...UserPullData.History, String(pulledItem)],
         'pity': pity
       });
+      Userpity.value = UserPullData?.pity || 0;
 
       if (!Array.isArray(userinventoryData.Items)) {
         userinventoryData.Items = [];
@@ -139,6 +143,7 @@
       console.error('Error pulling item:', error);
     }
   };
+
 
   const resetDemo = async () => {
     if (!userId.value) {
@@ -177,20 +182,106 @@
 
   </script>
 
+
   <template>
     <main>
-      <div>
-        <h1>Gacha Pull</h1>
-        <button @click="pullItem">Pull from Gacha</button>
-        <button @click="resetDemo">DEMO RESET</button>
-        <button @click="logout">log-out</button>
-        <a href="/">Home :3</a>
+      <div class="container">
+        <div class="demo-container top-right">
+          <div class="coins">
+            <img src="" alt="Coins/404">
+            <p>Coins: {{ coins }}</p>
+          </div>
+        </div>
+        <div class="banner">
+          <img src="" alt="Banner/404">
+        </div>
+        <div class="demo-container bottom-left">
+          <button @click="pullItem" class="gacha-button">1 pull</button>
+          <button @click="resetDemo" class="gacha-button">10 pull/resetdemo</button>
+        </div>
+        <div class="demo-container bottom-right">
+          <div class="pity">
+            <p>Pity: {{ Userpity  }}</p>
+          </div>
+          <button class="history gacha-button ">
+            <p>History</p>
+          </button>
+        </div>
       </div>
     </main>
   </template>
 
   <style scoped>
+  .container {
+    position: relative;
+    height: 100vh;
+    background-color: #f4f4f4;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+  }
 
+  .banner {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
 
+  .banner img {
+    max-width: 100%;
+    height: auto;
+  }
 
+  .demo-container {
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .top-right {
+    top: 10px;
+    right: 10px;
+  }
+
+  .bottom-left {
+    bottom: 10px;
+    left: 10px;
+  }
+
+  .bottom-right {
+    bottom: 10px;
+    right: 10px;
+  }
+
+  .gacha-button {
+    background-color: #FFA5B6;
+    color: #ffffff;
+    padding: 15px 32px;
+    margin: 5px;
+    border: none;
+    border-radius: 5px;
+    text-align: center;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+
+  .gacha-button:hover {
+    background-color: #FF718D;
+  }
+
+  .coins img {
+    width: 30px;
+    height: 30px;
+  }
+
+  .coins p, .history p, .pity p {
+    margin: 5px 0;
+    color: #333;
+    font-size: 1.2em;
+  }
   </style>
