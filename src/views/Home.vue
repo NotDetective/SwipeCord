@@ -119,8 +119,6 @@ const deleteUserAccount = async () => {
           </div>
         </form>
         <a href="/aanmelden">Nog geen account? Maak er een aan!</a>
-        <a href="/gatcha/QhMUFADip3rp81ygFdyP">gatcha //placeholder</a>
-        <a href="/MessageDemo">message :3 //placeholder</a>
       </div>
     </div>
   </body>
