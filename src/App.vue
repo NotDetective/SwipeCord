@@ -55,7 +55,6 @@ const toggleInventory = () => {
   <div class="container">
     <div class="left-section">
       <div class="inner-div blue">
-        <a href="/">Home :3</a>
         <a href="/gatcha/QhMUFADip3rp81ygFdyP">gatcha</a>
         <a href="/chat/7onqwJmH73U3ujPdurjb">chat</a>
         <button @click="logout">Logout</button>
@@ -121,7 +120,7 @@ const toggleInventory = () => {
 }
 
 .right-section {
-  height: 100%;
+  height: 97%;
   width: 17.5%;
   background-color: #757575;
   border-left: 1px solid #000000;

@@ -32,7 +32,7 @@ const loginWithEmail = async () => {
   }
 };
 
-const login = () => {
+const loginWithGoogle = () => {
   const provider = new GoogleAuthProvider();
   signInWithPopup(auth, provider)
       .then(async (result) => {
@@ -72,25 +72,6 @@ const initializeUserData = async (userId) => {
   await setDoc(userRef, userData);
   await setDoc(inventoryRef, inventoryData);
 };
-
-const deleteUserData = async (userId) => {
-  const pullsRef = doc(db, `pulls/QhMUFADip3rp81ygFdyP/special/${userId}`);
-  const userRef = doc(db, `users/${userId}`);
-  const inventoryRef = doc(db, `users/${userId}/inventory/${userId}`);
-
-  await deleteDoc(pullsRef);
-  await deleteDoc(userRef);
-  await deleteDoc(inventoryRef);
-  deleteUserAccount();
-};
-
-const deleteUserAccount = async () => {
-  const user = auth.currentUser;
-  if (user) {
-    await deleteUserData(user.uid);
-    await user.delete();
-  }
-};
 </script>
 
 <template>
@@ -100,7 +81,7 @@ const deleteUserAccount = async () => {
     <div class="box_home">
       <div class="links">
         <p>Log in met Google</p>
-        <button @click="login()" type="button" class="login-with-google-btn">
+        <button @click="loginWithGoogle()" type="button" class="login-with-google-btn">
           Sign in with Google
         </button>
       </div>
