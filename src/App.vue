@@ -44,7 +44,7 @@ const toggleInventory = () => {
       <div class="inner-div blue">
         <a href="/">Home :3</a>
         <a href="/gatcha/QhMUFADip3rp81ygFdyP">gatcha</a>
-        <a href="/MessageDemo">chat</a>
+        <a href="/chat/7onqwJmH73U3ujPdurjb">chat</a>
       </div>
       <div class="inner-div light-blue"></div>
     </div>
