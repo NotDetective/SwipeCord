@@ -1,8 +1,9 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue';
-import { getAuth, onAuthStateChanged } from 'firebase/auth';
+import {getAuth, onAuthStateChanged, signOut} from 'firebase/auth';
 import { getFirestore, doc, getDoc } from 'firebase/firestore';
 import { useFirestore } from 'vuefire';
+import router from "@/router";
 
 const auth = getAuth();
 const db = useFirestore();
@@ -21,6 +22,18 @@ const fetchUserInventory = async (uid: string) => {
     console.error('Error fetching user inventory:', error);
   }
 };
+
+const logout = () => {
+  signOut(auth)
+      .then(() => {
+        console.log("logged out");
+        router.push('/');
+      })
+      .catch((error) => {
+        console.error('Failed to log out', error);
+      });
+};
+
 
 onMounted(() => {
   onAuthStateChanged(auth, (user) => {
@@ -45,6 +58,7 @@ const toggleInventory = () => {
         <a href="/">Home :3</a>
         <a href="/gatcha/QhMUFADip3rp81ygFdyP">gatcha</a>
         <a href="/chat/7onqwJmH73U3ujPdurjb">chat</a>
+        <button @click="logout">Logout</button>
       </div>
       <div class="inner-div light-blue"></div>
     </div>

@@ -231,16 +231,6 @@ const resetDemo = async () => {
   }
 };
 
-const logout = () => {
-  signOut(auth)
-      .then(() => {
-        console.log("logged out");
-      })
-      .catch((error) => {
-        console.error('Failed to log out', error);
-      });
-};
-
 const paginatedHistory = computed(() => {
   const start = (currentPage.value - 1) * itemsPerPage;
   const end = start + itemsPerPage;

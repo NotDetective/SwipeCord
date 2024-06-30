@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import {useFirestore} from 'vuefire'
+import { useFirestore } from 'vuefire';
 import {
   collection,
   addDoc,
@@ -9,11 +9,13 @@ import {
   orderBy,
   doc,
   deleteDoc,
-  updateDoc
+  updateDoc,
+  getDoc,
+  setDoc,
 } from "firebase/firestore";
-import {ref, onMounted} from "vue";
-import {useRoute} from "vue-router";
-import {getAuth, onAuthStateChanged} from "firebase/auth";
+import { ref, onMounted } from "vue";
+import { useRoute } from "vue-router";
+import { getAuth, onAuthStateChanged } from "firebase/auth";
 import router from "@/router";
 
 const auth = getAuth();
@@ -35,20 +37,35 @@ onAuthStateChanged(auth, (user) => {
     userId.value = user.uid;
     displayName.value = user.displayName ? user.displayName : ' ';
     console.log(user.displayName);
-
   } else {
     console.log('No user is signed in.');
   }
 });
 
-const chatId = useRoute().params.id
+const chatId = useRoute().params.id;
+const db = useFirestore();
 
-const db = useFirestore()
+const messages = ref([]);
+const newMessage = ref("");
+const editingMessageId = ref(null);
+const editingMessageText = ref("");
 
-const messages = ref([])
-const newMessage = ref("")
-const editingMessageId = ref(null)
-const editingMessageText = ref("")
+// Function to update user's coin count
+const updateUserCoins = async () => {
+  const userDocRef = doc(db, 'users', userId.value);
+  const userDoc = await getDoc(userDocRef);
+
+  if (userDoc.exists()) {
+    const currentCoins = userDoc.data().Coins || 0;
+    await updateDoc(userDocRef, {
+      Coins: currentCoins + 1
+    });
+  } else {
+    await setDoc(userDocRef, {
+      Coins: 1
+    });
+  }
+};
 
 const listenToMessages = () => {
   const messagesCollectionRef = collection(db, 'chats', chatId, 'messages');
@@ -59,7 +76,7 @@ const listenToMessages = () => {
       ...doc.data()
     }));
   });
-}
+};
 
 const addMessage = async () => {
   if (newMessage.value.trim() === "") {
@@ -74,17 +91,20 @@ const addMessage = async () => {
     displayName: displayName.value
   });
   newMessage.value = "";
-}
+
+  // Update user's coin count
+  await updateUserCoins();
+};
 
 const deleteMessage = async (id) => {
   const messageDocRef = doc(db, 'chats', chatId, 'messages', id);
   await deleteDoc(messageDocRef);
-}
+};
 
 const startEditing = (id, text) => {
   editingMessageId.value = id;
   editingMessageText.value = text;
-}
+};
 
 const updateMessage = async () => {
   if (editingMessageText.value.trim() === "") {
@@ -99,7 +119,7 @@ const updateMessage = async () => {
 
   editingMessageId.value = null;
   editingMessageText.value = "";
-}
+};
 
 // this fuction is fucked. dont ask how dont ask why just know it fucked
 // it workes so it good
