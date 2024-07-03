@@ -1,26 +1,18 @@
 <script setup>
 import { ref } from 'vue';
-import { useCurrentUser, useFirebaseAuth } from 'vuefire';
 import router from '../router';
+
+
+const email = ref('');
+const password = ref('');
 import { getAuth, GoogleAuthProvider, signInWithPopup, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, deleteUser } from 'firebase/auth';
 import { getFirestore, doc, setDoc, deleteDoc } from 'firebase/firestore';
 
 const auth = getAuth();
 const db = getFirestore();
 
-const email = ref('');
-const password = ref('');
 
-const registerWithEmail = async (email, password) => {
-  try {
-    const result = await createUserWithEmailAndPassword(auth, email, password);
-    const user = result.user;
-    await initializeUserData(user.uid);
-    router.replace('/gatcha/QhMUFADip3rp81ygFdyP');
-  } catch (error) {
-    console.error('Failed to register', error);
-  }
-};
+
 
 const loginWithEmail = async () => {
   try {
@@ -29,6 +21,7 @@ const loginWithEmail = async () => {
     router.replace('/gatcha/QhMUFADip3rp81ygFdyP');
   } catch (error) {
     console.error('Failed to login', error);
+    // Handle and show the error to the user if needed
   }
 };
 
@@ -89,8 +82,8 @@ const initializeUserData = async (userId) => {
       <div class="rechts">
         <p>Log in</p>
         <form @submit.prevent="loginWithEmail">
-          <label for="first">Username:</label>
-          <input type="text" id="first" v-model="email" placeholder="Enter your Username" required />
+          <label for="first">Email:</label>
+          <input type="text" id="first" v-model="email" placeholder="Enter your Email" required />
 
           <label for="password">Password:</label>
           <input type="password" id="password" v-model="password" placeholder="Enter your Password" required />

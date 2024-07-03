@@ -1,59 +1,86 @@
-<script setup lang="ts">
+<script setup>
+import { ref } from 'vue';
 import "@/assets/home.css";
+import router from "@/router";
+import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
+import { getFirestore, doc, setDoc } from "firebase/firestore";
 
-("https://fonts.googleapis.com/css2?family=Rubik:ital,wght@0,300..900;1,300..900&display=swap");
+const auth = getAuth();
+const db = getFirestore();
+
+const email = ref('');
+const password = ref('');
+const username = ref('');
+const error = ref(null);
+
+const registerWithEmail = async () => {
+  try {
+    const result = await createUserWithEmailAndPassword(auth, email.value, password.value);
+    const user = result.user;
+    await initializeUserData(user.uid);
+    router.replace('/gatcha/QhMUFADip3rp81ygFdyP');
+  } catch (err) {
+    console.error('Failed to register', err);
+    error.value = 'Failed to register. Please try again.';
+  }
+};
+
+const initializeUserData = async (userId) => {
+  const pullsRef = doc(db, `pulls/QhMUFADip3rp81ygFdyP/special/${userId}`);
+  const userRef = doc(db, `users/${userId}`);
+  const inventoryRef = doc(db, `users/${userId}/inventory/${userId}`);
+
+  const userData = {
+    DailyStreak: 0,
+    Coins: 0,
+    hasDaily: false,
+    rank: 1,
+    xp: 0,
+    xpcap: 100,
+    username: username.value // Store username in Firestore
+  };
+
+  const pullsData = {
+    pity: 0,
+    History: []
+  };
+
+  const inventoryData = {
+    Items: []
+  };
+
+  await setDoc(pullsRef, pullsData);
+  await setDoc(userRef, userData);
+  await setDoc(inventoryRef, inventoryData);
+};
 </script>
 
 <template>
-  <body>
   <h1>Welkom op Swipecord</h1>
   <div class="box_home">
-  <div class="aanmelden">
+    <div class="aanmelden">
       <p>Aanmelden</p>
-      <form action="">
-        <label for="first">
-          Username:
-        </label>
-        <input type="text"
-               id="first"
-               name="first"
-               placeholder="Enter your Username" required>
+      <form @submit.prevent="registerWithEmail">
+        <label for="username">Username:</label>
+        <input type="text" id="username" v-model="username" placeholder="Enter your Username" required>
 
-        <label for="email">
-          Emailadres:
-        </label>
-        <input type="email"
-               id="email"
-               name="email"
-               placeholder="Enter your Emailadres" required>
+        <label for="email">Emailadres:</label>
+        <input type="email" id="email" v-model="email" placeholder="Enter your Emailadres" required>
 
-        <label for="password">
-          Password:
-        </label>
-        <input type="password"
-               id="password"
-               name="password"
-               placeholder="Enter your Password" required>
-        <label for="password">
-          Herhaal Password:
-        </label>
-        <input type="password"
-               id="password"
-               name="password"
-               placeholder="Enter your Password" required>
+        <label for="password">Password:</label>
+        <input type="password" id="password" v-model="password" placeholder="Enter your Password" required>
+
+        <label for="passwordRepeat">Herhaal Password:</label>
+        <input type="password" id="passwordRepeat" placeholder="Enter your Password" required>
 
         <div class="wrap">
-          <button type="submit"
-                  onclick="solve()">
-            Submit
-          </button>
+          <button type="submit">Submit</button>
         </div>
       </form>
-    <a href="/">Inloggen</a>
+      <div v-if="error">{{ error }}</div>
+      <a href="/">Inloggen</a>
     </div>
   </div>
-  </body>
-
 </template>
 
 
