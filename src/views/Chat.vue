@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { useFirestore } from 'vuefire';
+import {useFirestore} from 'vuefire';
 import {
   collection,
   addDoc,
@@ -13,9 +13,9 @@ import {
   getDoc,
   setDoc,
 } from "firebase/firestore";
-import { ref, onMounted } from "vue";
-import { useRoute, useRouter } from "vue-router"; // Ensure useRouter is imported
-import { getAuth, onAuthStateChanged } from "firebase/auth";
+import {ref, onMounted} from "vue";
+import {useRoute, useRouter} from "vue-router"; // Ensure useRouter is imported
+import {getAuth, onAuthStateChanged} from "firebase/auth";
 import router from "@/router"; // Import router if necessary
 
 const auth = getAuth();
@@ -60,9 +60,9 @@ const updateUserCoins = async () => {
 
   if (userDoc.exists()) {
     const currentCoins = userDoc.data().Coins || 0;
-    await updateDoc(userDocRef, { Coins: currentCoins + 1 });
+    await updateDoc(userDocRef, {Coins: currentCoins + 1});
   } else {
-    await setDoc(userDocRef, { Coins: 1 });
+    await setDoc(userDocRef, {Coins: 1});
   }
 };
 
@@ -70,15 +70,20 @@ const addMessage = async () => {
   if (newMessage.value.trim() === "") return;
 
   const messagesCollectionRef = collection(db, 'chats', chatId, 'messages');
-  await addDoc(messagesCollectionRef, {
-    text: newMessage.value,
-    createdAt: serverTimestamp(),
-    userId: userId.value,
-    displayName: displayName.value
-  });
-  newMessage.value = "";
-  await updateUserCoins();
+  try {
+    await addDoc(messagesCollectionRef, {
+      text: newMessage.value,
+      createdAt: serverTimestamp(),
+      userId: userId.value,
+      displayName: displayName.value
+    });
+    newMessage.value = "";
+    await updateUserCoins();
+  } catch (error) {
+    console.error('Failed to add message', error);
+  }
 };
+
 
 const deleteMessage = async (id) => {
   const messageDocRef = doc(db, 'chats', chatId, 'messages', id);
@@ -104,6 +109,8 @@ const updateMessage = async () => {
 };
 
 function timestampToDate(timestamp) {
+  if (!timestamp) return 'Invalid Date';
+
   let nanoseconds = timestamp.nanoseconds;
   let seconds = timestamp.seconds;
 
@@ -118,8 +125,9 @@ function timestampToDate(timestamp) {
   const month = String(date.getMonth() + 1).padStart(2, '0');
   const year = String(date.getFullYear()).slice(-2);
 
-  return `${hours}:${minutes} ${month}:${day}`;
+  return `${hours}:${minutes} ${month}-${day}`;
 }
+
 
 onMounted(() => {
   redirectIfNotAuthenticated();
@@ -136,7 +144,7 @@ onMounted(() => {
                v-for="(message, index) in messages" :key="message.id">
             <div class="chat-message">
               <div v-if="editingMessageId === message.id">
-                <input v-model="editingMessageText" @keyup.enter="updateMessage" />
+                <input v-model="editingMessageText" @keyup.enter="updateMessage"/>
                 <button @click="updateMessage">Save</button>
               </div>
               <div v-else>
@@ -161,7 +169,7 @@ onMounted(() => {
     </template>
   </Suspense>
   <div class="send-message-container">
-    <input v-model="newMessage" placeholder="Type your message here..." @keyup.enter="addMessage" />
+    <input v-model="newMessage" placeholder="Type your message here..." @keyup.enter="addMessage"/>
     <button class="send-button" @click="addMessage">Send</button>
   </div>
 </template>
@@ -198,7 +206,7 @@ onMounted(() => {
   padding: 1em;
   border-inline: var(--t) solid #0000;
   border-radius: calc(var(--r) + var(--t))/var(--r);
-  mask: radial-gradient(100% 100% at var(--_p) 0,#0000 99%,#000 102%) var(--_p) 100%/var(--t) var(--t) no-repeat, linear-gradient(#000 0 0) padding-box;
+  mask: radial-gradient(100% 100% at var(--_p) 0, #0000 99%, #000 102%) var(--_p) 100%/var(--t) var(--t) no-repeat, linear-gradient(#000 0 0) padding-box;
   background: #FFA5B6 border-box;
   color: #fff;
 }

@@ -31,7 +31,6 @@ describe('Load Messages', () => {
         onSnapshot.mockImplementation((q, callback) => {
             callback({ docs: messages.map(msg => ({ id: msg.id, data: () => msg })) });
         });
-
         const auth = { currentUser: null };
         getAuth.mockReturnValue(auth);
 
