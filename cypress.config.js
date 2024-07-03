@@ -5,5 +5,7 @@ export default defineConfig({
     setupNodeEvents(on, config) {
       // implement node event listeners here
     },
+    baseUrl: 'http://localhost:5173', // Adjust to your local server's base URL
+    specPattern: 'cypress/integration/**/*.spec.{js,jsx,ts,tsx}',
   },
 });
