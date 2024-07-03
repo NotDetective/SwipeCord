@@ -1,6 +1,5 @@
 <script setup>
 import { ref } from 'vue';
-import { useCurrentUser, useFirebaseAuth } from 'vuefire';
 import router from '../router';
 import { getAuth, GoogleAuthProvider, signInWithPopup, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, deleteUser } from 'firebase/auth';
 import { getFirestore, doc, setDoc, deleteDoc } from 'firebase/firestore';
