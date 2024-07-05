@@ -8,9 +8,6 @@ const password = ref('');
 import { getAuth, GoogleAuthProvider, signInWithPopup, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, deleteUser } from 'firebase/auth';
 import { getFirestore, doc, setDoc, deleteDoc } from 'firebase/firestore';
 
-const auth = getAuth();
-const db = getFirestore();
-
 
 
 

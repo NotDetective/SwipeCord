@@ -7,6 +7,8 @@ import router from './router'
 
 
 import { initializeApp } from 'firebase/app'
+import {getFirestore} from "firebase/firestore";
+import {getAuth} from "firebase/auth";
 
 console.log(import.meta.env.VITE_FIREBASE_API_KEY)
 
@@ -17,8 +19,9 @@ export const firebaseApp = initializeApp({
     appId: import.meta.env.VITE_FIREBASE_APP_ID,
 })
 
-const app = createApp(App)
-
+export const app = createApp(App)
+export const db = getFirestore(firebaseApp);
+export const auth = getAuth(firebaseApp);
 
 
 app.use(router)

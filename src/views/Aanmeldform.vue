@@ -62,27 +62,26 @@ const initializeUserData = async (userId) => {
       <p>Aanmelden</p>
       <form @submit.prevent="registerWithEmail">
         <label for="username">Username:</label>
-        <input type="text" id="username" v-model="username" placeholder="Enter your Username" required>
+        <input type="text" id="username" v-model="username" placeholder="Enter your Username" required data-cy="username-input">
 
         <label for="email">Emailadres:</label>
-        <input type="email" id="email" v-model="email" placeholder="Enter your Emailadres" required>
+        <input type="email" id="email" v-model="email" placeholder="Enter your Emailadres" required data-cy="email-input">
 
         <label for="password">Password:</label>
-        <input type="password" id="password" v-model="password" placeholder="Enter your Password" required>
+        <input type="password" id="password" v-model="password" placeholder="Enter your Password" required data-cy="password-input">
 
         <label for="passwordRepeat">Herhaal Password:</label>
-        <input type="password" id="passwordRepeat" placeholder="Enter your Password" required>
+        <input type="password" id="passwordRepeat" placeholder="Enter your Password" required data-cy="password-repeat-input">
 
         <div class="wrap">
-          <button type="submit">Submit</button>
+          <button type="submit" data-cy="submit-button">Submit</button>
         </div>
       </form>
-      <div v-if="error">{{ error }}</div>
-      <a href="/">Inloggen</a>
+      <div v-if="error" data-cy="error-message">{{ error }}</div>
+      <a href="/" data-cy="login-link">Inloggen</a>
     </div>
   </div>
 </template>
-
 
 <style scoped>
 @import url('https://fonts.googleapis.com/css2?family=Rubik:ital,wght@0,300..900;1,300..900&display=swap');
