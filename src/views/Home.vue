@@ -5,9 +5,9 @@ import router from '../router';
 
 const email = ref('');
 const password = ref('');
-import { getAuth, GoogleAuthProvider, signInWithPopup, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, deleteUser } from 'firebase/auth';
+import { getAuth, GoogleAuthProvider, signInWithRedirect, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, deleteUser } from 'firebase/auth';
 import { getFirestore, doc, setDoc, deleteDoc } from 'firebase/firestore';
-
+const auth = getAuth();
 
 
 
@@ -24,7 +24,7 @@ const loginWithEmail = async () => {
 
 const loginWithGoogle = () => {
   const provider = new GoogleAuthProvider();
-  signInWithPopup(auth, provider)
+  signInWithRedirect(auth, provider)
       .then(async (result) => {
         const user = result.user;
         await initializeUserData(user.uid);
@@ -86,10 +86,10 @@ const initializeUserData = async (userId) => {
           <input type="password" id="password" v-model="password" placeholder="Enter your Password" required />
 
           <div class="wrap">
-            <button type="submit">Submit</button>
+            <button id="inlogKlik" type="submit">Submit</button>
           </div>
         </form>
-        <a href="/aanmelden">Nog geen account? Maak er een aan!</a>
+        <a href="/aanmelden" class="maakAccount">Nog geen account? Maak er een aan!</a>
       </div>
     </div>
   </body>

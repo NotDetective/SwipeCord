@@ -74,7 +74,7 @@ const initializeUserData = async (userId) => {
         <input type="password" id="passwordRepeat" placeholder="Enter your Password" required data-cy="password-repeat-input">
 
         <div class="wrap">
-          <button type="submit" data-cy="submit-button">Submit</button>
+          <button type="submit" id="inloggenKnop" data-cy="submit-button">Submit</button>
         </div>
       </form>
       <div v-if="error" data-cy="error-message">{{ error }}</div>
